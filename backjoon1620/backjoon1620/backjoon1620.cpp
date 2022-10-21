@@ -31,6 +31,8 @@ int main()
 	cin >> m;
 	string s;
 	
+	cin.tie(0); 
+	ios::sync_with_stdio(0);
 
 
 
