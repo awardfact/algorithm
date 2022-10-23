@@ -67,6 +67,6 @@ int main()
 
     }
     cout << sum2 << "\n";
-    cout << sum << "\n";
+    //cout << sum << "\n";
     return 0;
 }
