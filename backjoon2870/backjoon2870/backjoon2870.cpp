@@ -24,21 +24,13 @@ out of range뜨는데 최대 100자인데 다 숫자이면 범위 넘어가는�
 
 //ss가 크면 1
 bool compare(const string s,const  string ss) {
-	if (s == ss) {
-		return false;
+	if (s.size() != ss.size()) {
+		return s.size() < ss.size();
 	}
-	if (s.size() < ss.size()) {
-		return true;
+	else {
+		return s.compare(ss)< 0;
 	}
-	else if (s.size() > ss.length()) {
-		return false;
-	}
-	else if (s.compare(ss) < 0) {
-		return true;
-	}
-	else if (s.compare(ss) > 0) {
-		return false;
-	}
+	
 
 
 }
@@ -49,6 +41,8 @@ int main()
 	vector<string> num;
 	vector<string> line;
 
+	int i, j;
+	string tmp = "";
 
 	cin >> n;
 	string s;
@@ -57,26 +51,31 @@ int main()
 		line.push_back(s);
 	}
 
-	int i, j;
-	string tmp = "";
+	//N줄의 글을 읽음
 	for (i = 0; i != line.size(); i++) {
 		tmp = "";
+		// i번쨰 줄의 글자를 읽어서 숫자가 있으면 숫자를 읽고 숫자의 앞에 0이 있으면 생략한다 
 		for ( j = 0; j != line[i].length(); j++) {
+			// j번째 글자가 숫자인 경우 
 			if (isdigit(line[i].at(j))) {
+				// 첫 숫자가 0인경우
 				if (line[i].at(j) == '0' && tmp == "") {
-
+					 // 첫 숫자는 0이지만 마지막 글자인경우 tmp에 0을 추가한다 
 					if (j == line[i].length()-1) {
 						tmp += line[i].at(j);
 					}
 				}
+				// 첫 숫자가 0이 아닌 숫자인 경우 tmp에 숫자를 추가한다 
 				else {
 					tmp += line[i].at(j);
 				}
 
 
 			}
-			else {
 
+			// 숫자가 아닌경우 
+			else {
+				// tmp에 숫자들이 있으면 숫자 배열에 tmp를 추가 
 				if (tmp != "") {
 
 					num.push_back(tmp);
@@ -86,6 +85,8 @@ int main()
 			}
 
 		}
+
+		//i번쨰 줄의 마지막 글자가 숫자면 tmp에 있는 숫자를 숫자 배열에 추가해준다    
 		if (tmp != "") {
 			num.push_back(tmp);
 		}
@@ -93,10 +94,12 @@ int main()
 
 
 
-
+	//비내림차순 정렬 
 	sort(num.begin(), num.end(), compare);
 
-	for (int i = 0; i != num.size(); i++) {
+
+	// 정렬한 숫자들 출력 
+	for (i = 0; i != num.size(); i++) {
 		cout << num[i] << "\n";
 	}
 
