@@ -56,7 +56,6 @@ int main()
             else {
               //  ns[i + (t - (ns1.length() - 1 - i))] = ns1.at(i);
 
-                cout << ns1.at(i) << " " << tmp << "\n";
                 ns[tmp] = ns1.at(i);
 
             }
