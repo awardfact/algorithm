@@ -1,0 +1,20 @@
+파보나치 함수
+
+
+int fibonacci(int n) {
+    if (n == 0) {
+        printf("0");
+        return 0;
+    } else if (n == 1) {
+        printf("1");
+        return 1;
+    } else {
+        return fibonacci(n‐1) + fibonacci(n‐2);
+    }
+}
+다음은 파보나치 수를 구하는 함수이다 
+파보나치(n)을 호출했을 떄 0과 1이 각각 몇번 출력되는지 작성하시오 
+
+
+시간 제한이 있어서 효율이 좋지 않은 재귀를
+반복문으로 하라는 문제 
