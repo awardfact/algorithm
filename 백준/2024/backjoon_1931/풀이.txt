@@ -1,0 +1,100 @@
+회의실 배정
+한개의 회의실이 있는데 회의를 가장 많이 사용할 수 있는 개수를 구하라
+첫째줄에 회의의 수 N 1~100000이 주어지고
+둘쨰줄부터 회의의 정보가 주어진다
+회의의 정보는 시작시간 끝나는 시간이 공백으로 주어진다 
+시간은 int형
+
+
+
+받은 값을 시작시간 순서대로 정렬하고 
+가장 빨리 끝나는 시간을 정하고 그 시간으로 이동 이걸 반복하는 방식으로 
+풀면 될꺼같다 
+
+처음에 했는데 다 맞는데 아니라고 나와서 그냥 다시 짰는데 정답 나옴
+
+
+
+10 5 
+
+
+6 7 
+
+
+50   99
+82 88
+60 80 
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct confT{
+    int start_time;
+    int end_time;
+
+}conf;
+
+//시작시간으로 내림차순 정렬하는데 같으면 끝 시간으로 내림차순
+int compare(const void* a, const void* b){
+    conf *confA = (conf*)a;
+    conf *confB = (conf*)b;
+    if( confA->end_time > confB->end_time ){
+        return 1;
+    }else if(confA->end_time == confB->end_time){
+        if(confA->start_time > confB->start_time){
+            return 1;
+        }else if(confA->start_time < confB->start_time){
+            return -1;
+        }else{
+            return 0;
+        }
+
+        
+    }else{
+        return -1;    
+    }
+
+}
+
+
+
+int main() {
+        
+    int n,i;
+    conf conference[100000];
+    int cnt;
+    int end_time = -1;
+    scanf("%d", &n);
+    //시간을 입력받음
+    for(i = 0; i < n; i++){
+        scanf("%d %d", &conference[i].start_time, &conference[i].end_time);
+    }
+ 
+    //시간을 종료, 시작 오름차순 정렬함 
+    qsort(conference, n, sizeof(conf), compare);
+
+
+    // 처음에 끝,시작 시간은 시간은 최소 시간이고 시작 시간이 끝 시간보다 커지면  다음 시작하는 회의중에 시작시간이 가장 빠르고 끝 시간이 가장 빠른 회의
+    for(i = 0; i < n; i++){
+        //printf("start_time : %d end_time : %d\n", conference[i].start_time, conference[i].end_time);
+
+        if(conference[i].start_time >= end_time){
+//printf("start_time : %d end_time : %d\n", conference[i].start_time, conference[i].end_time);
+            cnt++;
+            end_time = conference[i].end_time;
+        }
+        // if(conference[i].start_time > start_time){
+        //     start_time = conference[i].start_time;
+        // }        
+
+
+    }
+
+
+    printf("%d\n", cnt);
+        
+    
+
+    return 0;
+}
