@@ -2,31 +2,47 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+
+int compare(const void* a, const void* b) {
+    if (*(int*)a > *(int*)b) {
+        return 1;
+    }
+    else if (*(int*)a == *(int*)b) {
+        return 0;
+    }
+    else {
+        return -1;
+    }
+
+
+}
+
 //가중치와 넣은 순위 구조체 생성 
-typedef struct printQT {
+typedef struct houseT {
 
-    int value;
-    int input_seq;
+    int i;
+    int j;
 
-}printQ;
+}houseij;
 
-printQ que[101];
+houseij que[626];
 int front = 0;
 int rear = 0;
 
 
-void push(int value, int input_seq) {
-    rear = ++rear % 101;
-    que[rear].value = value;
-    que[rear].input_seq = input_seq;
+void push(int i, int j) {
+    rear = ++rear % 626;
+    que[rear].i = i;
+    que[rear].j = j;
 }
 
 
 
-printQ pop() {
+houseij pop() {
 
     if (front != rear) {
-        return que[++front % 101];
+        return que[++front % 626];
     }
 
 }
@@ -34,64 +50,71 @@ printQ pop() {
 
 
 int main() {
-    int test_case;
-    int n, docu_num, que_num;
-    int input_num;
-    printQ que_tmp;
-    int que_value[101];
-    int que_cnt;
     int i, j;
-    int tmp;
-    int seq;
-    int end_flag;
-    scanf("%d", &test_case);
-    //테스트 케이스 반복
-    for (i = 0; i < test_case; i++) {
-        //문서 개수와 몇번째 큐에 있는지 받음
-        scanf("%d %d", &docu_num, &que_num);
-        front = 0;
-        rear = 0;
-        seq = 0;
-
-        //숫자와 넣은 순서를 큐에 넣고 가중치들이 몇인지도 배열에 넣음 
-        for (j = 0; j < docu_num; j++) {
-            scanf("%d", &input_num);
-            que_value[j] = input_num;
-            push(input_num, j);
-
-        }
-
-
-        //큐에서 하나씩 빼서 가중치 더 큰거 있으면 큐에 다시 넣고 아니면 순서 증가시키고 찾으려는 넣은 순서인지 체크해서 맞으면 빠져나옴
-        while (front != rear) {
-            que_tmp = pop();
-            end_flag = 0;
-            for (j = 0; j < docu_num; j++) {
-
-                if (que_tmp.value < que_value[j]) {
-                    push(que_tmp.value, que_tmp.input_seq);
-                    end_flag = 1;
-                    break;
-                }
-            }
-
-
-            if (end_flag == 1) {
-                continue;
-            }
-            seq++;
-
-            if (que_num == que_tmp.input_seq) {
-                break;
-            }
-            que_value[que_tmp.input_seq] = 0;
-
-        }
-
-        printf("%d\n", seq);
-
+    char house[26][26] = { 0, };
+    int connect[26][26] = { 0, };
+    int danji[326] = { 0, };
+    int danji_cnt = 0;
+    houseij house_tmp;
+    int n;
+    //크기 입력받음 
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+        scanf("%s", house[i]);
     }
 
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            //집이 있고 단지 설정을 하지 않은 경우 
+            if (house[i][j] == '1' && connect[i][j] == 0) {
+                push(i, j);
+                danji_cnt++;
+                connect[i][j] = 1;
+                danji[danji_cnt]++;
+                while (front != rear) {
+                    house_tmp = pop();
+
+                    //위로 갈 수 있고 연결 안된 상태면 연결
+                    if (house_tmp.i + 1 < n && connect[house_tmp.i + 1][house_tmp.j] == 0 && house[house_tmp.i + 1][house_tmp.j] == '1') {
+                        push(house_tmp.i + 1, house_tmp.j);
+                        connect[house_tmp.i + 1][house_tmp.j] = 1;
+                        danji[danji_cnt]++;
+                    }
+
+
+                    //밑으로로 갈 수 있고 연결 안된 상태면 연결
+                    if (house_tmp.i - 1 >= 0 && connect[house_tmp.i - 1][house_tmp.j] == 0 && house[house_tmp.i - 1][house_tmp.j] == '1') {
+                        push(house_tmp.i - 1, house_tmp.j);
+                        connect[house_tmp.i - 1][house_tmp.j] = 1;
+                        danji[danji_cnt]++;
+                    }
+
+                    //오른쪽으로 갈 수 있고 연결 안된 상태면 연결
+                    if (house_tmp.j + 1 < n && connect[house_tmp.i][house_tmp.j + 1] == 0 && house[house_tmp.i][house_tmp.j + 1] == '1') {
+                        push(house_tmp.i, house_tmp.j + 1);
+                        connect[house_tmp.i][house_tmp.j + 1] = 1;
+                        danji[danji_cnt]++;
+                    }
+
+                    //왼쪽으로 갈 수 있고 연결 안된 상태면 연결
+                    if (house_tmp.j - 1 >= 0 && connect[house_tmp.i][house_tmp.j - 1] == 0 && house[house_tmp.i][house_tmp.j - 1] == '1') {
+                        push(house_tmp.i, house_tmp.j - 1);
+                        connect[house_tmp.i][house_tmp.j - 1] = 1;
+                        danji[danji_cnt]++;
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    qsort(&danji[1], danji_cnt, sizeof(int), compare);
+
+    printf("%d\n", danji_cnt);
+    for (i = 1; i <= danji_cnt; i++) {
+        printf("%d\n", danji[i]);
+    }
 
     return 0;
 }
