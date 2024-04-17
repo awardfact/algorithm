@@ -1,98 +1,89 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int compare(const void* a, const void* b) {
 
-    if (*(int*)a > *(int*)b) {
-        return 1;
-    }
-    else if (*(int*)a == *(int*)b) {
-        return 0;
-    }
-    else {
-        return -1;
+
+void lis(int* array, int* len, int n) {
+    int max = *len;
+    int min = 0;
+    int mid = (min + max) / 2;
+
+    if (*len == 0) {
+
+        array[0] = n;
+        *len += 1;
+        return;
     }
 
+
+    if (array[0] > n) {
+        array[0] = n;
+        return;
+    }
+
+    if (array[*len - 1] < n) {
+        array[*len] = n;
+        *len += 1;
+        return;
+    }
+
+
+    while (min <= max) {
+
+        mid = (min + max) / 2;
+        if (array[mid] == n) {
+            mid = -1;
+            break;
+        }if (array[mid] > n) {
+            max = mid - 1;
+        }
+        else if (array[mid] < n) {
+            min = mid + 1;
+        }
+
+
+    }
+
+    //   printf("mid : %d array[mid] : %d n : %d\n", mid, array[mid], n);
+    if (mid != -1) {
+
+        if (array[mid] > n) {
+            array[mid] = n;
+        }
+        else {
+            array[mid + 1] = n;
+        }
+
+
+    }
 
 
 }
 
+
+
 int main() {
-    int n, b, k;
-    int min, i, j;
-    int failure[100000];
-    int start;
-    int end;
-    int cnt;
-    int com_flag = 0;
+    int n, i, j;
+    int cnt = 0;
+    int max = 0;
+    int len = 0;
+    int box[1000];
+    int box_cnt[1000] = { 0, };
+    scanf("%d", &n);
 
-    min = 0x7FFFFFFF;
-    scanf("%d %d %d", &n, &k, &b);
-
-    for (i = 0; i < b; i++) {
-        scanf("%d", &failure[i]);
-
+    for (i = 0; i < n; i++) {
+        scanf("%d", &box[i]);
     }
-    //고장난거 정렬
-    qsort(failure, b, sizeof(int), compare);
 
-    //고장난거 반복 돌려서 k개 연결시키려면 고장 i번째부터 몇개 고쳐야하는지 계산해서 낮은거 추출
-    for (i = 0; i < b; i++) {
-        //1이면 1부터시작
-        if (i == 0) {
-            start = 1;
+    //최장증가 부분 수열로 가장 긴 증가 수열을 구함
+    for (i = 0; i < n; i++) {
+        //printf("i : %d n : %d\n", i, box[i]);
 
-            //이외에는 이전 고장 + 1
-        }
-        else {
-            start = failure[i - 1] + 1;
-        }
-        com_flag = 0;
-        cnt = 0;
-
-        //현재꺼부터 반복 돌아서 고쳐야 하는지 판단
-        for (j = i; j < b; j++) {
-
-            end = failure[j] - 1;
-            if (end - start + 1 >= k) {
-                com_flag = 1;
-                break;
-            }
-            else {
-                cnt++;
-            }
-
-        }
-
-        //못빠져나왔으면 이후에 고장난게 없어서 end는 n으로
-        if (com_flag == 0) {
-            end = n;
-        }
-
-        //  printf("i : %d cnt : %d\n", i, cnt);
-
-          //k개를 이었고 고친 숫자가 min보다 작으면 교체
-        if (end - start + 1 >= k && cnt < min) {
-            min = cnt;
-        }
+        lis(box_cnt, &len, box[i]);
 
 
 
     }
-
-    end = n;
-    start = failure[b - 1] + 1;
-    cnt = 0;
-    if (end - start + 1 >= k && cnt < min) {
-        min = cnt;
-    }
-
-
-    if (b == 0) {
-        min = 0;
-    }
-
-    printf("%d\n", min);
-
+    printf("%d\n", len);
     return 0;
 }
